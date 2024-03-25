@@ -37,7 +37,7 @@ This reposity will be updated soon, including:
 
 
 ## Getting Started
-1. Following https://mmdetection3d.readthedocs.io/en/latest/getting_started.html#installation
+Following https://mmdetection3d.readthedocs.io/en/latest/getting_started.html#installation
 a. Create a conda virtual environment and activate it.
 ```bash
 conda create -n tod3cap python=3.8 -y 
