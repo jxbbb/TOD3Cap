@@ -1,18 +1,18 @@
 # TOD3Cap: Towards 3D Dense Captioning in Outdoor Scenes
 <div align=center> <img src="docs/teaser.jpg" width="650"/> </div>
 
-This repository is an official implementation of [TOD3Cap: Towards 3D Dense Captioning in Outdoor Scenes](https://arxiv.org/abs/xxxx.xxxxx).
+This repository is an official implementation of [TOD3Cap: Towards 3D Dense Captioning in Outdoor Scenes](https://arxiv.org/abs/xxxx.xxxxx), created by Bu Jin, Yupeng Zheng, Pengfei Li, Weize Li, Yuhang Zheng, Sujie Hu, Xinyu Liu, Jinwei Zhu, Zhijie Yan, Haiyang Sun, Kun Zhan, Peng Jia, Xiaoxiao Long, Yilun Chen, Hao Zhao.
 
 ## Introduction
 
-We introduce the new task of outdoor 3D dense captioning. As input, we assume a LiDAR point cloud and a set of RGB images captured by the panoramic camera rig. The expected output is a set of object boxes with captions. To tackle this task, we propose the TOD^3^Cap network, which leverages the BEV representation to generate object box proposals and integrates Relation Q-Former with LLaMA-Adapter to generate rich captions for these objects. We also introduce the TOD^3Cap dataset, the largest one to our knowledge for 3D dense captioning in outdoor scenes, which contains 2.3M descriptions of 64.3K outdoor objects from 850 scenes in [nuScenes](https://www.nuscenes.org/).
+We introduce the new task of outdoor 3D dense captioning. As input, we assume a LiDAR point cloud and a set of RGB images captured by the panoramic camera rig. The expected output is a set of object boxes with captions. To tackle this task, we propose the TOD3Cap network, which leverages the BEV representation to generate object box proposals and integrates Relation Q-Former with LLaMA-Adapter to generate rich captions for these objects. We also introduce the TOD3Cap dataset, the largest one to our knowledge for 3D dense captioning in outdoor scenes, which contains 2.3M descriptions of 64.3K outdoor objects from 850 scenes in [nuScenes](https://www.nuscenes.org/).
 
 ## Note
 This reposity will be updated soon, including:
 - [x] **Initialization**.
-- [ ] Uploading the **TOD^3^Cap Dataset**.
+- [ ] Uploading the **TOD3Cap Dataset**.
 - [ ] Uploading the **Annotation Tools**.
-- [ ] Uploading the codes of **TOD^3^Cap Network**.
+- [ ] Uploading the codes of **TOD3Cap Network**.
 - [ ] Uploading the **Installation** guidelines.
 - [ ] Uploading the **Training** and **Evaluation** scripts.
 - [ ] Uploading the **Visualization** scripts of gt data and predicted results.
