@@ -1,7 +1,43 @@
-# TOD3Cap: Towards 3D Dense Captioning in Outdoor Scenes
-<div align=center> <img src="docs/teaser.jpg" width="650"/> </div>
+<br>
+<p align="center">
+<h1 align="center"><strong>TOD3Cap: Towards 3D Dense Captioning in Outdoor Scenes</strong></h1>
+  <p align="center">
+    <a href='https://github.com/jxbbb/TOD3Cap' target='_blank'>Bu Jin</a>&emsp;
+    <a href='https://github.com/jxbbb/TOD3Cap' target='_blank'>Yupeng Zheng</a>&emsp;
+    <a href='https://github.com/jxbbb/TOD3Cap' target='_blank'>Pengfei Li</a>&emsp;
+    <a href='https://github.com/jxbbb/TOD3Cap' target='_blank'>Weize Li</a>&emsp;
+    <a href='https://github.com/jxbbb/TOD3Cap' target='_blank'>Yuhang Zheng</a>&emsp;
+    <a href='https://github.com/jxbbb/TOD3Cap' target='_blank'>Sujie Hu</a>&emsp;
+    <br>
+    <a href='https://github.com/jxbbb/TOD3Cap' target='_blank'>Xinyu Liu</a>&emsp;
+    <a href='https://github.com/jxbbb/TOD3Cap' target='_blank'>Jinwei Zhu</a>&emsp;
+    <a href='https://github.com/jxbbb/TOD3Cap' target='_blank'>Zhijie Yan</a>&emsp;
+    <a href='https://github.com/jxbbb/TOD3Cap' target='_blank'>Haiyang Sun</a>&emsp;
+    <a href='https://github.com/jxbbb/TOD3Cap' target='_blank'>Kun Zhan</a>&emsp;
+    <a href='https://github.com/jxbbb/TOD3Cap' target='_blank'>Peng Jia</a>&emsp;
+    <br>
+    <a href='https://github.com/jxbbb/TOD3Cap' target='_blank'>Xiaoxiao Long</a>&emsp;
+    <a href='https://github.com/jxbbb/TOD3Cap' target='_blank'>Yilun Chen</a>&emsp;
+    <a href='https://github.com/jxbbb/TOD3Cap' target='_blank'>Hao Zhao</a>&emsp;
+    <br>
+    Li Auto&emsp;AIR, Tsinghua University&emsp;Beihang University
+    <br>
+    CASIA&emsp;HKUST&emsp;HKU
+  </p>
+</p>
+<!-- <p align="center">
+  <a href="https://arxiv.org/abs/2403.19589" target='_blank'>
+    <img src="https://img.shields.io/badge/arXiv-2403.19589-blue?">
+  </a>
+  <a href="https://github.com/jxbbb/TOD3Cap" target='_blank'>
+    <img src="https://img.shields.io/badge/Project-&#x1F680-blue">
+  </a>
+</p> -->
+<div id="top" align="center">
+[![arXiv](https://img.shields.io/badge/arXiv-2403.19589-blue)](https://arxiv.org/abs/2403.19589)
+[![](https://img.shields.io/badge/Project-%F0%9F%9A%80-blue)](https://github.com/jxbbb/TOD3Cap)
+</div>
 
-This repository is an official implementation of [TOD3Cap: Towards 3D Dense Captioning in Outdoor Scenes](https://arxiv.org/abs/xxxx.xxxxx), created by Bu Jin, Yupeng Zheng, Pengfei Li, Weize Li, Yuhang Zheng, Sujie Hu, Xinyu Liu, Jinwei Zhu, Zhijie Yan, Haiyang Sun, Kun Zhan, Peng Jia, Xiaoxiao Long, Yilun Chen, Hao Zhao.
 
 ## Introduction
 
