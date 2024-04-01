@@ -1,7 +1,7 @@
 # TOD3Cap: Towards 3D Dense Captioning in Outdoor Scenes
 <div align=center> <img src="docs/teaser.jpg" width="650"/> </div>
 
-This repository is an official implementation of [TOD3Cap: Towards 3D Dense Captioning in Outdoor Scenes](https://arxiv.org/abs/xxxx.xxxxx), created by Bu Jin, Yupeng Zheng, Pengfei Li, Weize Li, Yuhang Zheng, Sujie Hu, Xinyu Liu, Jinwei Zhu, Zhijie Yan, Haiyang Sun, Kun Zhan, Peng Jia, Xiaoxiao Long, Yilun Chen, Hao Zhao.
+This repository is an official implementation of [TOD3Cap: Towards 3D Dense Captioning in Outdoor Scenes](https://arxiv.org/abs/2403.19589), created by Bu Jin, Yupeng Zheng, Pengfei Li, Weize Li, Yuhang Zheng, Sujie Hu, Xinyu Liu, Jinwei Zhu, Zhijie Yan, Haiyang Sun, Kun Zhan, Peng Jia, Xiaoxiao Long, Yilun Chen, Hao Zhao.
 
 ## Introduction
 
@@ -121,9 +121,11 @@ We provide example scripts to evaluate pre-trained checkpoints.
 If you find our work useful in your research, please consider citing:
 
 ```bibtex
-@article{jin2024TOD3Cap,
+@article{jin2024tod3cap,
   title={TOD3Cap: Towards 3D Dense Captioning in Outdoor Scenes},
-  year={2023}
+  author={Jin, Bu and Zheng, Yupeng and Li, Pengfei and Li, Weize and Zheng, Yuhang and Hu, Sujie and Liu, Xinyu and Zhu, Jinwei and Yan, Zhijie and Sun, Haiyang and others},
+  journal={arXiv preprint arXiv:2403.19589},
+  year={2024}
 }
 ```
 
