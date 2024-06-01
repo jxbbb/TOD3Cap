@@ -72,7 +72,7 @@ class BEVFormer(MVXTwoStageDetector):
 
         llama_ckpt_dir = "/data18/jinbu/nuscenes-caption/Attribute/LLaMA-Adapter//LLaMA-7B/7B"
         llama_tokenzier_path = "/data18/jinbu/nuscenes-caption/Attribute/LLaMA-Adapter//LLaMA-7B/tokenizer.model"
-        self.llama_adapter = LLaMA_adapter(llama_ckpt_dir, llama_tokenzier_path) # TODO: fix phase
+        self.llama_adapter = LLaMA_adapter(llama_ckpt_dir, llama_tokenzier_path, phase == "pretrain") # TODO: fix phase
 
 
     def extract_img_feat(self, img, img_metas, len_queue=None):

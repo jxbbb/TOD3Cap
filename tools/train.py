@@ -222,7 +222,7 @@ def main():
         train_cfg=cfg.get('train_cfg'),
         test_cfg=cfg.get('test_cfg'))
     model.init_weights()
-    checkpoint = load_checkpoint(model, "work_dirs/bevformer_tiny_gpt_frozen_with_pred/epoch_6.pth", map_location='cpu')
+    checkpoint = load_checkpoint(model, "work_dirs_past/bevformer_base_all_train_e10/epoch_10.pth", map_location='cpu')
     # llama_adapter_pretrained_path = "/data18/jinbu/nuscenes-caption/Attribute/LLaMA-Adapter//llama_adapter_v2_multimodal/ckpts/7fa55208379faf2dd862565284101b0e4a2a72114d6490a95e432cf9d9b6c813_BIAS-7B.pth"
     # misc.load_model(model.llama_adapter, llama_adapter_pretrained_path)
 

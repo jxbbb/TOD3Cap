@@ -2,7 +2,7 @@ import os
 import json
 from pathlib import Path
 
-import clip
+# import clip
 import torch
 import torch.nn as nn
 from timm.models.vision_transformer import Block

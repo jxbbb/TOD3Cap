@@ -16,6 +16,7 @@ data
 test/
 val/
 work_dirs/
+work_dirs*/
 develop-eggs/
 dist/
 downloads/
@@ -166,3 +167,4 @@ tmp*.py
 
 checkpoints
 ckpts
+# mmdetection3d # change dataset to fit for dense captioning
