@@ -37,7 +37,7 @@ This reposity will be updated soon, including:
 
 
 ## Getting Started
-Following https://mmdetection3d.readthedocs.io/en/latest/getting_started.html#installation
+
 a. Create a conda virtual environment and activate it.
 ```bash
 conda create -n tod3cap python=3.8 -y 
@@ -46,6 +46,7 @@ conda activate tod3cap
 b. Install PyTorch and torchvision following the official instructions.
 ```bash
 pip install torch==1.9.1+cu111 torchvision==0.10.1+cu111 torchaudio==0.9.1 -f https://download.pytorch.org/whl/torch_stable.html
+
 # Recommended torch>=1.9
 ```
 
