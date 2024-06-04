@@ -1,6 +1,6 @@
 # TOD3Cap: Towards 3D Dense Captioning in Outdoor Scenes
 
-This repository is the pytorch implementation of our paper, **TOD3Cap** (Code Coming Soon!)
+This repository is the pytorch implementation of our paper, **TOD3Cap**.
 
 ### [Project Page](https://tod3cap.github.io/) | [arXiv](https://arxiv.org/abs/2403.19589) | [PDF](https://arxiv.org/pdf/2403.19589.pdf)
 
