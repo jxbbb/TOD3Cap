@@ -2,9 +2,15 @@
 
 This repository is the pytorch implementation of our paper, **TOD3Cap**.
 
-### [Project Page](https://tod3cap.github.io/) | [arXiv](https://arxiv.org/abs/2403.19589) | [PDF](https://arxiv.org/pdf/2403.19589.pdf)
-
 **TOD3Cap: Towards 3D Dense Captioning in Outdoor Scenes**
+<div align="left">
+    <a href="https://arxiv.org/abs/2403.19589" target="_blank">
+    <img src="https://img.shields.io/badge/Paper-arXiv-red" alt="Paper arXiv"></a>
+    <a href="https:/" target="_blank">
+    <img src="https://img.shields.io/badge/Homepage-TOD3Cap-blue" alt="Project Page"></a>
+    <a href="https://" target="_blank">
+    <img src="https://img.shields.io/badge/Data-TOD3Cap-darkorange" alt="Data"></a>
+</div>
 
 <a href="https://scholar.google.com/citations?user=uUd5v2cAAAAJ&hl=en"><strong>Bu Jin</strong></a>†
 ·
@@ -34,7 +40,7 @@ This repository is the pytorch implementation of our paper, **TOD3Cap**.
 ·
 <a href="https://air.tsinghua.edu.cn/en/info/1046/1621.htm"><strong>Yilun Chen</strong></a>
 ·
-<a><strong>Hao Zhao</strong></a>
+<a href="https://sites.google.com/view/fromandto"><strong>Hao Zhao</strong></a>
 <br>Preprint, 2024<br>
 
 <b> CASIA &nbsp; | &nbsp; Li Auto  &nbsp; | &nbsp; AIR, Tsinghua University &nbsp; | &nbsp; Beihang University  &nbsp; | &nbsp; HKUST &nbsp; | &nbsp; HKU </b>
