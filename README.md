@@ -1,11 +1,51 @@
 # TOD3Cap: Towards 3D Dense Captioning in Outdoor Scenes
-<div align=center> <img src="docs/teaser.jpg" width="650"/> </div>
 
-This repository is an official implementation of [TOD3Cap: Towards 3D Dense Captioning in Outdoor Scenes](https://arxiv.org/abs/2403.19589), created by Bu Jin, Yupeng Zheng, Pengfei Li, Weize Li, Yuhang Zheng, Sujie Hu, Xinyu Liu, Jinwei Zhu, Zhijie Yan, Haiyang Sun, Kun Zhan, Peng Jia, Xiaoxiao Long, Yilun Chen, Hao Zhao.
+This repository is the pytorch implementation of our paper, **TOD3Cap** (Code Coming Soon!)
+
+### [Project Page](https://tod3cap.github.io/) | [arXiv](https://arxiv.org/abs/2403.19589) | [PDF](https://arxiv.org/pdf/2403.19589.pdf)
+
+**TOD3Cap: Towards 3D Dense Captioning in Outdoor Scenes**
+
+<a href="https://scholar.google.com/citations?user=uUd5v2cAAAAJ&hl=en"><strong>Bu Jin</strong></a>†
+·
+<a href="https://scholar.google.com/citations?user=anGhGdYAAAAJ&hl=en"><strong>Yupeng Zheng</strong></a>†
+·
+<a href="https://philipflyg.github.io/"><strong>Pengfei Li</strong></a>
+·
+<a href="https://ericlee0224.github.io/"><strong>Weize Li</strong></a>
+·
+<a href="https://scholar.google.com/citations?user=Wn2Aic0AAAAJ&hl=en"><strong>Yuhang Zheng</strong></a>
+·
+<a><strong>Sujie Hu</strong></a>
+·
+<a><strong>Xinyu Liu</strong></a>
+·
+<a><strong>Jinwei Zhu</strong></a>
+·
+<a><strong>Zhijie Yan</strong></a>
+·
+<a><strong>Haiyang Sun</strong></a>
+·
+<a><strong>Kun Zhan</strong></a>
+·
+<a><strong>Peng Jia</strong></a>
+·
+<a href="http://xxlong.site/"><strong>Xiaoxiao Long</strong></a>
+·
+<a href="https://air.tsinghua.edu.cn/en/info/1046/1621.htm"><strong>Yilun Chen</strong></a>
+·
+<a><strong>Hao Zhao</strong></a>
+<br>Preprint, 2024<br>
+<b> CASIA &nbsp; | &nbsp; Li Auto  &nbsp; | &nbsp; AIR, Tsinghua University &nbsp; | &nbsp; Beihang University  &nbsp; | &nbsp; HKUST &nbsp; | &nbsp; HKU </b>
+
+<a><img align="center" src="docs/tod3cap_logo_all.svg" width="50%"/></a>
+      
+_________________ 
 
 ## Introduction
 
 We introduce the new task of outdoor 3D dense captioning. As input, we assume a LiDAR point cloud and a set of RGB images captured by the panoramic camera rig. The expected output is a set of object boxes with captions. To tackle this task, we propose the TOD3Cap network, which leverages the BEV representation to generate object box proposals and integrates Relation Q-Former with LLaMA-Adapter to generate rich captions for these objects. We also introduce the TOD3Cap dataset, the largest one to our knowledge for 3D dense captioning in outdoor scenes, which contains 2.3M descriptions of 64.3K outdoor objects from 850 scenes in [nuScenes](https://www.nuscenes.org/).
+<div align=center> <img src="docs/teaser.jpg" width="850"/> </div>
 
 ## Note
 This reposity will be updated soon, including:
