@@ -36,6 +36,7 @@ This repository is the pytorch implementation of our paper, **TOD3Cap**.
 ·
 <a><strong>Hao Zhao</strong></a>
 <br>Preprint, 2024<br>
+
 <b> CASIA &nbsp; | &nbsp; Li Auto  &nbsp; | &nbsp; AIR, Tsinghua University &nbsp; | &nbsp; Beihang University  &nbsp; | &nbsp; HKUST &nbsp; | &nbsp; HKU </b>
 
 <a><img align="center" src="docs/tod3cap_logo_all.svg" width="50%"/></a>
