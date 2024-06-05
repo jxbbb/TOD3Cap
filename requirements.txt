@@ -1,9 +1,0 @@
-fairscale
-sentencepiece
-Pillow
-gradio
-tqdm
-yapf==0.40.1
-numpy==1.21.0
-setuptools==59.5.0  # our codes require a specific version of setuptools
-
