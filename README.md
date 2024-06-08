@@ -6,7 +6,7 @@ This repository is the pytorch implementation of our paper, **TOD3Cap**.
 <div align="left">
     <a href="https://arxiv.org/abs/2403.19589" target="_blank">
     <img src="https://img.shields.io/badge/Paper-arXiv-red" alt="Paper arXiv"></a>
-    <a href="https:/" target="_blank">
+    <a href="https://jxbbb.github.io/TOD3Cap/" target="_blank">
     <img src="https://img.shields.io/badge/Homepage-TOD3Cap-blue" alt="Project Page"></a>
     <a href="https://" target="_blank">
     <img src="https://img.shields.io/badge/Data-TOD3Cap-darkorange" alt="Data"></a>
@@ -180,7 +180,7 @@ If you find our work useful in your research, please consider citing:
 
 
 ## Acknowledgments
-
+We would like to thank Dave Zhenyu Chen at Technical University of Munich for his valuable proofreading and insightful suggestions. We would also like to thank Lijun Zhou and the student volunteers at Li Auto for their efforts in building the TOD3Cap dataset.
 Our code is built on top of open-source GitHub repositories.  We thank all the authors who made their code public, which tremendously accelerates our project progress. If you find these works helpful, please consider citing them as well.
 
 [open-mmlab/mmdetection3d](https://github.com/open-mmlab/mmdetection3d)
