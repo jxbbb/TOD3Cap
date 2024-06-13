@@ -12,7 +12,7 @@ This repository is the pytorch implementation of our paper, **TOD3Cap**.
     <img src="https://img.shields.io/badge/Data-TOD3Cap-darkorange" alt="Data"></a>
 </div>
 
-<a href="https://scholar.google.com/citations?user=uUd5v2cAAAAJ&hl=en"><strong>Bu Jin</strong></a>📧
+<a href="https://scholar.google.com/citations?user=uUd5v2cAAAAJ&hl=en"><strong>Bu Jin</strong></a>
 ·
 <a href="https://scholar.google.com/citations?user=anGhGdYAAAAJ&hl=en"><strong>Yupeng Zheng</strong></a>📧
 ·
