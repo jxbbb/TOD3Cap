@@ -3,6 +3,8 @@
 This repository is the pytorch implementation of our paper, **TOD3Cap**.
 
 **TOD3Cap: Towards 3D Dense Captioning in Outdoor Scenes**
+
+**ECCV 2024**
 <div align="left">
     <a href="https://arxiv.org/abs/2403.19589" target="_blank">
     <img src="https://img.shields.io/badge/Paper-arXiv-red" alt="Paper arXiv"></a>
@@ -41,7 +43,7 @@ This repository is the pytorch implementation of our paper, **TOD3Cap**.
 <a href="https://air.tsinghua.edu.cn/en/info/1046/1621.htm"><strong>Yilun Chen</strong></a>
 ·
 <a href="https://sites.google.com/view/fromandto"><strong>Hao Zhao</strong></a>
-<br>**ECCV 2024**  (📧 indicates corresponding authors)<br>
+<br>(📧 indicates corresponding authors)<br>
 
 <b> CASIA &nbsp; | &nbsp; Li Auto  &nbsp; | &nbsp; AIR, Tsinghua University &nbsp; | &nbsp; Beihang University  &nbsp; | &nbsp; HKUST &nbsp; | &nbsp; HKU </b>
 
