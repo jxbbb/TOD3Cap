@@ -41,7 +41,7 @@ This repository is the pytorch implementation of our paper, **TOD3Cap**.
 <a href="https://air.tsinghua.edu.cn/en/info/1046/1621.htm"><strong>Yilun Chen</strong></a>
 ·
 <a href="https://sites.google.com/view/fromandto"><strong>Hao Zhao</strong></a>
-<br>Preprint, 2024  (📧 indicates corresponding authors)<br>
+<br>**ECCV 2024**  (📧 indicates corresponding authors)<br>
 
 <b> CASIA &nbsp; | &nbsp; Li Auto  &nbsp; | &nbsp; AIR, Tsinghua University &nbsp; | &nbsp; Beihang University  &nbsp; | &nbsp; HKUST &nbsp; | &nbsp; HKU </b>
 
