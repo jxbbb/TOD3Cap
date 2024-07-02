@@ -4,7 +4,7 @@ This repository is the pytorch implementation of our paper, **TOD3Cap**.
 
 **TOD3Cap: Towards 3D Dense Captioning in Outdoor Scenes**
 
-**ECCV 2024**
+**[ECCV 2024]**
 <div align="left">
     <a href="https://arxiv.org/abs/2403.19589" target="_blank">
     <img src="https://img.shields.io/badge/Paper-arXiv-red" alt="Paper arXiv"></a>
