@@ -61,9 +61,9 @@ This reposity will be updated soon, including:
 - [x] **Initialization**.
 - [x] Uploading the **TOD3Cap Dataset**.
 - [ ] Uploading the **Annotation Tools**.
-- [ ] Uploading the codes of **TOD3Cap Network**.
-- [ ] Uploading the **Installation** guidelines.
-- [ ] Uploading the **Training** and **Evaluation** scripts.
+- [x] Uploading the codes of **TOD3Cap Network**.
+- [x] Uploading the **Installation** guidelines.
+- [x] Uploading the **Training** and **Evaluation** scripts.
 - [ ] Uploading the **Visualization** scripts of gt data and predicted results.
 - [ ] Uploading the **Baselines** implementation.
 
