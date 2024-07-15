@@ -145,7 +145,7 @@ pip install -r requirements.txt
 
 ## Dataset Preparation
 
-You can ether download the preprocessed data in [this site](), or just download and preprocess the raw files following [this site](https://github.com/open-mmlab/mmdetection3d/blob/1.0/docs/en/datasets/nuscenes_det.md) by yourself.
+You can download the TOD3Cap dataset in [Google Drive](https://drive.google.com/drive/folders/1LGimA3Il-9J1eJ3FYSzASnfD2Gcls_W1).
 
 ## Train
 
