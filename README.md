@@ -87,51 +87,9 @@ This reposity will be updated soon, including:
 
 ## Getting Started
 
-a. Create a conda virtual environment and activate it.
-```bash
-conda create -n tod3cap python=3.8 -y 
-conda activate tod3cap
-```
-b. Install PyTorch and torchvision following the official instructions.
-```bash
-pip install torch==1.9.1+cu111 torchvision==0.10.1+cu111 torchaudio==0.9.1 -f https://download.pytorch.org/whl/torch_stable.html
+Camera-based implementation: see `tod3cap_camera/README.md`.
 
-# Recommended torch>=1.9
-```
-
-c. Install gcc>=5 in conda env (optional).
-```bash
-conda install -c omgarcia gcc-6 # gcc-6.2
-```
-
-d. Install mmcv-full.
-```bash
-pip install mmcv-full==1.4.0
-#  pip install mmcv-full==1.4.0 -f https://download.openmmlab.com/mmcv/dist/cu111/torch1.9.0/index.html
-```
-
-e. Install mmdet and mmseg.
-```bash
-pip install mmdet==2.14.0
-pip install mmsegmentation==0.14.1
-```
-
-f. Install mmdet3d from source code.
-```bash
-cd mmdetection3d
-python setup.py install
-```
-
-g. Install Detectron2 and Timm.
-```bash
-pip install einops fvcore seaborn iopath==0.1.9 timm==0.6.13  typing-extensions==4.5.0 pylint ipython==8.12  numpy==1.19.5 matplotlib==3.5.2 numba==0.48.0 pandas==1.4.4 scikit-image==0.19.3 setuptools==60.5.0
-python -m pip install 'git+https://github.com/facebookresearch/detectron2.git'
-```
-
-h. Install other dependencies.
-```bash
-pip install -r requirements.txt
-```
+Lidar-based and fusion-based: see `tod3cap_fusion/README.md`.
 
 ## Models
 
@@ -159,6 +117,9 @@ We provide example scripts to evaluate pre-trained checkpoints.
 ```bash
 . tools/dist_evaluate.sh
 ```
+
+Note that you should add: "box_token=sample_annotation['token']," to "nuscenes_devkit-1.1.11-py3.8.egg/nuscenes/eval/common/loaders.py:134"
+
 
 
 ## Qualititive results

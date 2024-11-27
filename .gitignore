@@ -19,6 +19,7 @@ work_dirs/
 work_dirs*/
 develop-eggs/
 dist/
+.dist_test
 downloads/
 eggs/
 .eggs/
@@ -150,21 +151,28 @@ nuscenes
 .vscode 
 .vscode/*
 
-*/*results*/
-*results*/
 tmp*/
 cache/*
 */cache*/
 tmp*.py
 *pickle
-*output*/
-*/*output*/
-./datasets
-/datasets
 *.zip
 *.jsonl
 *.json
 
-checkpoints
-ckpts
-# mmdetection3d # change dataset to fit for dense captioning
+data/*
+
+.bashrc
+LLaMA-7B/*
+tod3cap_camera/nlg-eval
+tod3cap_camera/checkpoints/*
+tod3cap_camera/test/*
+tod3cap_camera/work_dirs/*
+tod3cap_camera/mmdetection3d/build/*
+tod3cap_camera/LLaMA-7B/*
+
+tod3cap_fusion/pretrained/*
+tod3cap_fusion/runs/*
+tod3cap_fusion/test/*
+tod3cap_fusion/build
+tod3cap_fusion/LLaMA-7B/*
