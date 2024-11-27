@@ -107,7 +107,8 @@ You can download the TOD3Cap dataset in [Google Drive](https://drive.google.com/
 
 We provide example scripts to train our model.
 ```bash
-. tools/dist_train.sh
+cd tod3cap_fusion
+. dist_train.sh
 ```
 
 ## Evaluate
@@ -115,11 +116,10 @@ We provide example scripts to train our model.
 We provide example scripts to evaluate pre-trained checkpoints.
 
 ```bash
-. tools/dist_evaluate.sh
+cd tod3cap_fusion
+. dist_test.sh
+. eval.sh
 ```
-
-Note that you should add: "box_token=sample_annotation['token']," to "nuscenes_devkit-1.1.11-py3.8.egg/nuscenes/eval/common/loaders.py:134"
-
 
 
 ## Qualititive results
