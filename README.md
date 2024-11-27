@@ -108,6 +108,8 @@ You can download the TOD3Cap dataset in [Google Drive](https://drive.google.com/
 We provide example scripts to train our model.
 ```bash
 cd tod3cap_fusion
+. dist_train_stage2.sh
+# After changing the checkpoint path to your own path
 . dist_train.sh
 ```
 
@@ -117,7 +119,9 @@ We provide example scripts to evaluate pre-trained checkpoints.
 
 ```bash
 cd tod3cap_fusion
+# After changing the checkpoint path to your own path
 . dist_test.sh
+# After changing the result path to your own path
 . eval.sh
 ```
 
