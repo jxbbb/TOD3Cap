@@ -176,3 +176,11 @@ tod3cap_fusion/runs/*
 tod3cap_fusion/test/*
 tod3cap_fusion/build
 tod3cap_fusion/LLaMA-7B/*
+tod3cap_fusion/nlg-eval
+
+tod3cap_tf/nlg-eval
+tod3cap_tf/checkpoints/*
+tod3cap_tf/test/*
+tod3cap_tf/work_dirs/*
+tod3cap_tf/mmdetection3d/build/*
+tod3cap_tf/LLaMA-7B/*

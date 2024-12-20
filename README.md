@@ -51,6 +51,10 @@ This repository is the pytorch implementation of our paper, **TOD3Cap**.
       
 _________________ 
 
+## News
+
+We update the latest version of our dataset and code.
+
 ## Introduction
 
 We introduce the new task of outdoor 3D dense captioning. As input, we assume a LiDAR point cloud and a set of RGB images captured by the panoramic camera rig. The expected output is a set of object boxes with captions. To tackle this task, we propose the TOD3Cap network, which leverages the BEV representation to generate object box proposals and integrates Relation Q-Former with LLaMA-Adapter to generate rich captions for these objects. We also introduce the TOD3Cap dataset, the largest one to our knowledge for 3D dense captioning in outdoor scenes, which contains 2.3M descriptions of 64.3K outdoor objects from 850 scenes in [nuScenes](https://www.nuscenes.org/).
