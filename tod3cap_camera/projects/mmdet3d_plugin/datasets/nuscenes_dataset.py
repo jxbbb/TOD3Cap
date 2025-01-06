@@ -128,6 +128,8 @@ class CustomNuScenesDataset(NuScenesDataset):
 
     def union2one(self, queue):
         imgs_list = [each['img'].data for each in queue]
+        max_points = min([each['points'].data.shape[0] for each in queue])
+        points_list = [each['points'].data[0:max_points,:] for each in queue]
         metas_map = {}
         prev_scene_token = None
         prev_pos = None
@@ -151,6 +153,7 @@ class CustomNuScenesDataset(NuScenesDataset):
                 prev_angle = copy.deepcopy(tmp_angle)
         queue[-1]['img'] = DC(torch.stack(imgs_list), cpu_only=False, stack=True)
         queue[-1]['img_metas'] = DC(metas_map, cpu_only=True)
+        queue[-1]['points'] = DC(torch.stack(points_list), cpu_only=False, stack=True)
         queue = queue[-1]
         return queue
 

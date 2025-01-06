@@ -5,4 +5,4 @@ from .temporal_self_attention import TemporalSelfAttention
 from .encoder import BEVFormerEncoder, BEVFormerLayer
 from .decoder import DetectionTransformerDecoder
 from .group_attention import GroupMultiheadAttention
-
+from .fuser import ConvFuser

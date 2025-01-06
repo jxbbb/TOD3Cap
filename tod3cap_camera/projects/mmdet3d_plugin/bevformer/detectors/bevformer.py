@@ -8,6 +8,7 @@ import torch
 from mmcv.runner import force_fp32, auto_fp16
 from mmdet.models import DETECTORS
 from mmdet3d.core import bbox3d2result
+from mmdet3d.ops import Voxelization, DynamicScatter
 from mmdet3d.models.detectors.mvx_two_stage import MVXTwoStageDetector
 from projects.mmdet3d_plugin.models.utils.grid_mask import GridMask
 import time
@@ -16,12 +17,12 @@ import numpy as np
 import mmdet3d
 from projects.mmdet3d_plugin.models.utils.bricks import run_time
 from copy import deepcopy
-
+from torch.nn import functional as F
 import llama.utils
 from llama.llama_adapter import LLaMA_adapter
 import util.misc as misc
-
 from projects.mmdet3d_plugin.core.bbox.util import normalize_bbox
+from mmdet3d.models.builder import build_backbone
 
 @DETECTORS.register_module()
 class BEVFormer(MVXTwoStageDetector):
@@ -31,6 +32,8 @@ class BEVFormer(MVXTwoStageDetector):
     """
 
     def __init__(self,
+                 fusion=False,
+                 training_stage=3,
                  use_grid_mask=False,
                  pts_voxel_layer=None,
                  pts_voxel_encoder=None,
@@ -55,6 +58,7 @@ class BEVFormer(MVXTwoStageDetector):
                              img_backbone, pts_backbone, img_neck, pts_neck,
                              pts_bbox_head, img_roi_head, img_rpn_head,
                              train_cfg, test_cfg, pretrained)
+        self.fusion = fusion
         self.grid_mask = GridMask(
             True, True, rotate=1, offset=False, ratio=0.5, mode=1, prob=0.7)
         self.use_grid_mask = use_grid_mask
@@ -68,11 +72,33 @@ class BEVFormer(MVXTwoStageDetector):
             'prev_pos': 0,
             'prev_angle': 0,
         }
-
-
+        self.max_voxels = pts_voxel_layer["max_voxels"]
+        self.max_num_points = pts_voxel_layer["max_num_points"]
+        self.voxel_size = pts_voxel_layer["voxel_size"]
+        self.point_cloud_range = pts_voxel_layer["point_cloud_range"]
+        # self.pts_encoder = build_backbone(pts_middle_encoder)
+        self.voxelize_module = Voxelization(max_num_points=self.max_num_points, 
+                                            voxel_size=self.voxel_size, 
+                                            max_voxels=self.max_voxels,
+                                            point_cloud_range=self.point_cloud_range)
+        # self.pts_encoder = 
         llama_ckpt_dir = "LLaMA-7B"   # fix this path to your own
         llama_tokenzier_path = "LLaMA-7B/tokenizer.model" # fix this path to your own
-        self.llama_adapter = LLaMA_adapter(llama_ckpt_dir, llama_tokenzier_path)
+
+        self.training_stage = training_stage
+        
+        if self.training_stage != 1:
+            self.llama_adapter = LLaMA_adapter(llama_ckpt_dir, llama_tokenzier_path)
+
+        if self.training_stage == 2:
+            # Freeze parameters except llama_adapter
+            self.freeze_parameters()
+
+    def freeze_parameters(self):
+        # Freeze all parameters by default
+        for name, param in self.named_parameters():
+            if "llama_adapter" not in name:  # Check if the parameter is part of llama_adapter
+                param.requires_grad = False  # Freeze it by setting requires_grad to False
 
 
     def extract_img_feat(self, img, img_metas, len_queue=None):
@@ -110,16 +136,55 @@ class BEVFormer(MVXTwoStageDetector):
                 img_feats_reshaped.append(img_feat.view(B, int(BN / B), C, H, W))
         return img_feats_reshaped
 
+    def extract_pts_feat(self, pts):
+        """Extract features of points."""
+        if not self.with_pts_bbox:
+            return None
+        voxel_features, coords, sizes = self.voxelize(pts, 'lidar')
+        batch_size = coords[-1, 0] + 1
+        x = self.pts_middle_encoder(voxel_features, coords, batch_size)
+        return x
+    
+    @torch.no_grad()
+    @force_fp32()
+    def voxelize(self, points, sensor):
+        feats, coords, sizes = [], [], []
+        for k, res in enumerate(points):
+            ret = self.voxelize_module(res)
+            if len(ret) == 3:
+                # hard voxelize
+                f, c, n = ret
+            else:
+                assert len(ret) == 2
+                f, c = ret
+                n = None
+            feats.append(f)
+            coords.append(F.pad(c, (1, 0), mode="constant", value=k))
+            if n is not None:
+                sizes.append(n)
+
+        feats = torch.cat(feats, dim=0)
+        coords = torch.cat(coords, dim=0)
+        if len(sizes) > 0:
+            sizes = torch.cat(sizes, dim=0)
+            feats = feats.sum(dim=1, keepdim=False) / sizes.type_as(feats).view(
+                -1, 1
+            )
+            feats = feats.contiguous()
+
+        return feats, coords, sizes
+
     @auto_fp16(apply_to=('img'))
     def extract_feat(self, img, img_metas=None, len_queue=None):
         """Extract features from images and points."""
-
         img_feats = self.extract_img_feat(img, img_metas, len_queue=len_queue)
+        
         
         return img_feats
 
 
     def forward_pts_train(self,
+                          img_feats,
                           pts_feats,
                           gt_bboxes_3d,
                           gt_labels_3d,
@@ -144,11 +209,20 @@ class BEVFormer(MVXTwoStageDetector):
         """
 
         outs = self.pts_bbox_head(
-            pts_feats, img_metas, prev_bev)
+            img_feats, pts_feats, img_metas, prev_bev)
+        if self.fusion and pts_feats is not None:
+            fused_bev = outs['bev_embed']
+            fused_bev = fused_bev.permute(1,0,2).reshape(pts_feats.shape[0], pts_feats.shape[1], pts_feats.shape[2], pts_feats.shape[3])
+            fused_bev = self.pts_backbone(fused_bev)
+            fused_bev = self.pts_neck(fused_bev)
+            outs['bev_embed'] = fused_bev[0].reshape(pts_feats.shape[0], pts_feats.shape[1], -1).permute(2, 0, 1)
 
         loss_inputs = [gt_bboxes_3d, gt_labels_3d, outs]
 
         losses, sampling_results = self.pts_bbox_head.loss(*loss_inputs, img_metas=img_metas)
+
+        if self.training_stage == 1:    # only in training stage 1, we do not need to calculate the loss of caption
+            return losses
 
         # in caption we only need the last layer output
         sampling_results = sampling_results[-1]
@@ -160,74 +234,6 @@ class BEVFormer(MVXTwoStageDetector):
         losses.update({"loss_cap": caploss})
 
         return losses
-
-    # def caption_head_with_gt(self, outs, pts_feats, sampling_results, gt_bboxes_3d, gt_captions_3d, gt_caplabels_3d):
-
-    #     def _downsamplecap(array_size, sample_size):
-
-    #         if sample_size <= array_size:
-    #             # If the sample size is less than or equal to the array size, perform sampling without replacement
-    #             sampled_indices = torch.randperm(array_size)[:sample_size]
-    #         else:
-    #             # If the sample size is greater than the array size, repeat certain positions' values until the desired length is reached
-    #             num_repeats = sample_size // array_size
-    #             remainder = sample_size % array_size
-
-    #             # Repeat the entire array
-    #             repeated_indices = torch.arange(array_size).repeat(num_repeats)
-
-    #             # Randomly select indices for the remaining part
-    #             remaining_indices = torch.randperm(array_size)[:remainder]
-
-    #             # Concatenate the indices
-    #             sampled_indices = torch.cat((repeated_indices, remaining_indices))
-
-    #         return sampled_indices
-
-    #     batch_size = len(gt_bboxes_3d)
-
-    #     gt_bboxes = gt_bboxes_3d
-    #     bev_embeds = pts_feats
-
-    #     loss = []
-
-    #     for bs in range(batch_size):
-    #         gt_bbox = gt_bboxes[bs]
-    #         gt_bbox = torch.cat((gt_bbox.gravity_center, gt_bbox.tensor[:, 3:]), dim=1)
-    #         gt_bbox = normalize_bbox(gt_bbox, [-51.2, -51.2, -5.0, 51.2, 51.2, 3.0])
-    #         bev_embed = bev_embeds[bs]
-    #         gt_captions = gt_captions_3d[bs]
-    #         gt_caplabels = gt_caplabels_3d[bs]
-
-    #         assert len(gt_bbox) == len(gt_captions)
-
-    #         num_bboxes = gt_bbox.size(0)
-    #         word_len = gt_captions.size(-1)
-
-    #         sampled_indices = _downsamplecap(num_bboxes, 10)
-
-    #         gt_bbox = gt_bbox[sampled_indices]
-    #         bev_embed = bev_embed.unsqueeze(0).repeat(10, 1, 1, 1, 1, 1)
-
-    #         caption_targets = gt_captions[sampled_indices]
-    #         caplabel_targets = gt_caplabels[sampled_indices]
-    #         caption_weights = caption_targets.new_ones((10,), dtype=torch.long)
-
-    #         with torch.cuda.amp.autocast():
-    #             caption_loss = self.llama_adapter((caption_targets, caplabel_targets, caption_weights), (bev_embed, gt_bbox[:, :8].to(bev_embed.device)))
-                
-    #             # # to test the generatation of gt box
-    #             # self.eval()
-    #             # format_instruction = "Describe the object in detail."
-    #             # prompt = llama.format_prompt(format_instruction)
-    #             # generated_caption = self.llama_adapter.generate((bev_embed[:1], gt_bbox[:1, :8].to(bev_embed.device)), ([prompt]))
-    #             # print(generated_caption)
-                
-            
-    #         loss.append(caption_loss)
-
-
-    #     return torch.stack(loss, dim=0).mean()
 
     def caption_head(self, outs, pts_feats, sampling_results, gt_captions_3d, gt_caplabels_3d):
 
@@ -370,7 +376,7 @@ class BEVFormer(MVXTwoStageDetector):
         else:
             return self.forward_test(**kwargs)
     
-    def obtain_history_bev(self, imgs_queue, img_metas_list):
+    def obtain_history_bev(self, imgs_queue, pts, img_metas_list):
         """Obtain history BEV features iteratively. To save GPU memory, gradients are not calculated.
         """
         self.eval()
@@ -379,15 +385,23 @@ class BEVFormer(MVXTwoStageDetector):
             prev_bev = None
             bs, len_queue, num_cams, C, H, W = imgs_queue.shape
             imgs_queue = imgs_queue.reshape(bs*len_queue, num_cams, C, H, W)
+            pts_queue = pts.reshape(bs*len_queue, *pts.shape[2:])
             img_feats_list = self.extract_feat(img=imgs_queue, len_queue=len_queue)
+            pts_feats_queue = self.extract_pts_feat(pts_queue)
             for i in range(len_queue):
                 img_metas = [each[i] for each in img_metas_list]
                 if not img_metas[0]['prev_bev_exists']:
                     prev_bev = None
                 # img_feats = self.extract_feat(img=img, img_metas=img_metas)
                 img_feats = [each_scale[:, i] for each_scale in img_feats_list]
+                pts_feats = pts_feats_queue[i:i+1, :]
                 prev_bev = self.pts_bbox_head(
-                    img_feats, img_metas, prev_bev, only_bev=True)
+                    img_feats, pts_feats, img_metas, prev_bev, only_bev=True)
+                if self.fusion and pts_feats != None:
+                    prev_bev = prev_bev.permute(1,0,2).reshape(pts_feats.shape[0], pts_feats.shape[1], pts_feats.shape[2], pts_feats.shape[3])
+                    prev_bev = self.pts_backbone(prev_bev)
+                    prev_bev = self.pts_neck(prev_bev)
+                    prev_bev = prev_bev[0].reshape(bs, pts_feats.shape[1], -1).permute(0, 2, 1)
             self.train()
             return prev_bev
 
@@ -436,17 +450,21 @@ class BEVFormer(MVXTwoStageDetector):
         # do not freeze the bev encoder
         len_queue = img.size(1)
         prev_img = img[:, :-1, ...]
+        prev_pts = points[:, :-1, ...]
         img = img[:, -1, ...]
+        pts = points[:, -1, ...]
 
         prev_img_metas = copy.deepcopy(img_metas)
-        prev_bev = self.obtain_history_bev(prev_img, prev_img_metas)
+        prev_bev = self.obtain_history_bev(prev_img, prev_pts, prev_img_metas)  # [bs, len_queue, N, 5]
 
         img_metas = [each[len_queue-1] for each in img_metas]
         if not img_metas[0]['prev_bev_exists']:
             prev_bev = None
         img_feats = self.extract_feat(img=img, img_metas=img_metas)
+        pts_feats = self.extract_pts_feat(pts) # [bs, N, 5]
         losses = dict()
         losses_pts = self.forward_pts_train(img_feats, 
+                                            pts_feats,
                                             gt_bboxes_3d,
                                             gt_labels_3d, 
                                             gt_captions_3d,
@@ -458,12 +476,13 @@ class BEVFormer(MVXTwoStageDetector):
         losses.update(losses_pts)
         return losses
 
-    def forward_test(self, img_metas, img=None, **kwargs):
+    def forward_test(self, img_metas, img=None, points=None, **kwargs):
         for var, name in [(img_metas, 'img_metas')]:
             if not isinstance(var, list):
                 raise TypeError('{} must be a list, but got {}'.format(
                     name, type(var)))
         img = [img] if img is None else img
+        pts = [points] if points is None else points
 
         if img_metas[0][0]['scene_token'] != self.prev_frame_info['scene_token']:
             # the first sample of each scene is truncated
@@ -486,21 +505,30 @@ class BEVFormer(MVXTwoStageDetector):
             img_metas[0][0]['can_bus'][:3] = 0
 
         new_prev_bev, bbox_results = self.simple_test(
-            img_metas[0], img[0], prev_bev=self.prev_frame_info['prev_bev'], **kwargs)
+            img_metas[0], img[0], pts[0], prev_bev=self.prev_frame_info['prev_bev'], **kwargs)
         # During inference, we save the BEV features and ego motion of each timestamp.
         self.prev_frame_info['prev_pos'] = tmp_pos
         self.prev_frame_info['prev_angle'] = tmp_angle
         self.prev_frame_info['prev_bev'] = new_prev_bev
         return bbox_results
 
-    def simple_test_pts(self, x, img_metas, prev_bev=None, rescale=False):
+    def simple_test_pts(self, x, pts_feats,  img_metas, prev_bev=None, rescale=False):
         """Test function"""
-        outs = self.pts_bbox_head(x, img_metas, prev_bev=prev_bev)
-
+        outs = self.pts_bbox_head(x, pts_feats, img_metas, prev_bev=prev_bev)
+        # TODO: add pts_backbone and neck here
+        if self.fusion and pts_feats is not None:
+            fused_bev = outs['bev_embed']
+            fused_bev = fused_bev.permute(1,0,2).reshape(pts_feats.shape[0], pts_feats.shape[1], pts_feats.shape[2], pts_feats.shape[3])
+            fused_bev = self.pts_backbone(fused_bev)
+            fused_bev = self.pts_neck(fused_bev)
+            outs['bev_embed'] = fused_bev[0].reshape(pts_feats.shape[0], pts_feats.shape[1], -1).permute(2, 0, 1)
         bbox_list = self.pts_bbox_head.get_bboxes(
             outs, img_metas, rescale=rescale)
-
-        caption_results = self.generate_caption(outs, x)
+        
+        if self.training_stage != 1:
+            caption_results = self.generate_caption(outs, x)
+        else:
+            caption_results = [None]
 
         bbox_results = [
             bbox3d2result(bboxes, scores, labels, caps=captions)
@@ -509,13 +537,14 @@ class BEVFormer(MVXTwoStageDetector):
 
         return outs['bev_embed'], bbox_results
 
-    def simple_test(self, img_metas, img=None, prev_bev=None, rescale=False):
+    def simple_test(self, img_metas, img=None, pts=None, prev_bev=None, rescale=False):
         """Test function without augmentaiton."""
         img_feats = self.extract_feat(img=img, img_metas=img_metas)
-
+        if self.fusion and pts is not None:
+            pts_feats = self.extract_pts_feat(pts=pts)
         bbox_list = [dict() for i in range(len(img_metas))]
         new_prev_bev, bbox_pts = self.simple_test_pts(
-            img_feats, img_metas, prev_bev, rescale=rescale)
+            img_feats, pts_feats, img_metas, prev_bev, rescale=rescale)
         for result_dict, pts_bbox in zip(bbox_list, bbox_pts):
             result_dict['pts_bbox'] = pts_bbox
         return new_prev_bev, bbox_list

@@ -57,7 +57,7 @@ class BEVFormerHead(DETRHead):
         else:
             self.code_weights = [1.0, 1.0, 1.0,
                                  1.0, 1.0, 1.0, 1.0, 1.0, 0.2, 0.2]
-
+        
         self.bbox_coder = build_bbox_coder(bbox_coder)
         self.pc_range = self.bbox_coder.pc_range
         self.real_w = self.pc_range[3] - self.pc_range[0]
@@ -117,7 +117,7 @@ class BEVFormerHead(DETRHead):
                 nn.init.constant_(m[-1].bias, bias_init)
 
     @auto_fp16(apply_to=('mlvl_feats'))
-    def forward(self, mlvl_feats, img_metas, prev_bev=None,  only_bev=False):
+    def forward(self, mlvl_feats, pts_feats, img_metas, prev_bev=None,  only_bev=False):
         """Forward function.
         Args:
             mlvl_feats (tuple[Tensor]): Features from the upstream
@@ -145,6 +145,7 @@ class BEVFormerHead(DETRHead):
         if only_bev:  # only use encoder to obtain BEV features, TODO: refine the workaround
             return self.transformer.get_bev_features(
                 mlvl_feats,
+                pts_feats,
                 bev_queries,
                 self.bev_h,
                 self.bev_w,
@@ -157,6 +158,7 @@ class BEVFormerHead(DETRHead):
         else:
             outputs = self.transformer(
                 mlvl_feats,
+                pts_feats,
                 bev_queries,
                 object_query_embeds,
                 self.bev_h,

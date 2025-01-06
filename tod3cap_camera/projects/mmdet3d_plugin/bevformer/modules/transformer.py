@@ -21,7 +21,7 @@ from .spatial_cross_attention import MSDeformableAttention3D
 from .decoder import CustomMSDeformableAttention
 from projects.mmdet3d_plugin.models.utils.bricks import run_time
 from mmcv.runner import force_fp32, auto_fp16
-
+from projects.mmdet3d_plugin.bevformer.modules.fuser import ConvFuser
 
 @TRANSFORMER.register_module()
 class PerceptionTransformer(BaseModule):
@@ -42,6 +42,7 @@ class PerceptionTransformer(BaseModule):
                  encoder=None,
                  decoder=None,
                  embed_dims=256,
+                 fusion=False,
                  rotate_prev_bev=True,
                  use_shift=True,
                  use_can_bus=True,
@@ -50,6 +51,8 @@ class PerceptionTransformer(BaseModule):
                  rotate_center=[100, 100],
                  **kwargs):
         super(PerceptionTransformer, self).__init__(**kwargs)
+        if fusion:
+            self.fuser = ConvFuser(in_channels=[256, 256], out_channels=256)
         self.encoder = build_transformer_layer_sequence(encoder)
         self.decoder = build_transformer_layer_sequence(decoder)
         self.embed_dims = embed_dims
@@ -66,6 +69,7 @@ class PerceptionTransformer(BaseModule):
         self.two_stage_num_proposals = two_stage_num_proposals
         self.init_layers()
         self.rotate_center = rotate_center
+        self.fusion = fusion
 
     def init_layers(self):
         """Initialize layers of the Detr3DTransformer."""
@@ -104,6 +108,7 @@ class PerceptionTransformer(BaseModule):
     def get_bev_features(
             self,
             mlvl_feats,
+            pts_feats,
             bev_queries,
             bev_h,
             bev_w,
@@ -196,12 +201,16 @@ class PerceptionTransformer(BaseModule):
             shift=shift,
             **kwargs
         )
+        if pts_feats is not None and self.fusion:
+            bev_embed = self.fuser([bev_embed.permute(0, 2, 1).reshape(1, pts_feats.shape[1], bev_h, bev_w), pts_feats])
+            bev_embed = bev_embed.reshape(bs, pts_feats.shape[1], -1).permute(0, 2, 1)
 
-        return bev_embed
+        return bev_embed # [1, 2500, 256]
 
     @auto_fp16(apply_to=('mlvl_feats', 'bev_queries', 'object_query_embed', 'prev_bev', 'bev_pos'))
     def forward(self,
                 mlvl_feats,
+                pts_feats,
                 bev_queries,
                 object_query_embed,
                 bev_h,
@@ -251,6 +260,7 @@ class PerceptionTransformer(BaseModule):
 
         bev_embed = self.get_bev_features(
             mlvl_feats,
+            pts_feats,
             bev_queries,
             bev_h,
             bev_w,
@@ -271,6 +281,9 @@ class PerceptionTransformer(BaseModule):
         query = query.permute(1, 0, 2)
         query_pos = query_pos.permute(1, 0, 2)
         bev_embed = bev_embed.permute(1, 0, 2)
+        # [2500, 1, 256]
+        # fusion
+
 
         inter_states, inter_references = self.decoder(
             query=query,

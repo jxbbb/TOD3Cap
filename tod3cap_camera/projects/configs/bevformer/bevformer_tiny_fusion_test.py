@@ -19,7 +19,7 @@ plugin_dir = 'projects/mmdet3d_plugin/'
 # cloud range accordingly
 point_cloud_range = [-51.2, -51.2, -5.0, 51.2, 51.2, 3.0]
 voxel_size = [0.2, 0.2, 8]
-
+voxel_size_lidar = [0.2, 0.256, 0.256]
 
 
 
@@ -39,6 +39,8 @@ input_modality = dict(
     use_map=False,
     use_external=True)
 
+_fusion_ = True
+_training_stage_ = 1
 _dim_ = 256
 _pos_dim_ = _dim_//2
 _ffn_dim_ = _dim_*2
@@ -49,6 +51,8 @@ queue_length = 3 # each sequence contains `queue_length` frames.
 
 model = dict(
     type='BEVFormer',
+    fusion=_fusion_,
+    training_stage=_training_stage_,
     use_grid_mask=True,
     video_test_mode=True,
     pretrained=dict(img='torchvision://resnet50'),
@@ -69,6 +73,40 @@ model = dict(
         add_extra_convs='on_output',
         num_outs=_num_levels_,
         relu_before_extra_convs=True),
+    pts_voxel_layer=dict(
+        max_num_points=10,
+        voxel_size=voxel_size_lidar,
+        max_voxels=(120000, 160000),
+        point_cloud_range=point_cloud_range),
+    # pts_voxel_encoder=dict(
+    #     type='HardSimpleVFE',
+    #     num_features=5,
+    # ),
+    pts_middle_encoder=dict(
+        type='SparseEncoder',
+        in_channels=5,
+        sparse_shape=[41, 400, 400],
+        output_channels=128,
+        order=('conv', 'norm', 'act'),
+        encoder_channels=[[16, 16, 32], [32, 32, 64], [64, 64, 128], [128, 128]],
+        encoder_paddings=[[0, 0, 1], [0, 0, 1], [0, 0, [0, 1, 1]], [0, 0]],
+        block_type='basicblock'),
+    pts_backbone=dict(
+        type='SECOND',
+        in_channels=256,
+        out_channels=[128, 256],
+        layer_nums=[5, 5],
+        layer_strides=[1, 2],
+        norm_cfg=dict(type='BN', eps=0.001, momentum=0.01),
+        conv_cfg=dict(type='Conv2d', bias=False)),
+    pts_neck=dict(
+        type='SECONDFPN',
+        in_channels=[128, 256],
+        out_channels=[128, 128],
+        upsample_strides=[1, 2],
+        norm_cfg=dict(type='BN', eps=0.001, momentum=0.01),
+        upsample_cfg=dict(type='deconv', bias=False),
+        use_conv_for_no_stride=True),
     pts_bbox_head=dict(
         type='BEVFormerHead',
         bev_h=bev_h_,
@@ -81,6 +119,7 @@ model = dict(
         as_two_stage=False,
         transformer=dict(
             type='PerceptionTransformer',
+            fusion=_fusion_,
             rotate_prev_bev=True,
             use_shift=True,
             use_can_bus=True,
@@ -140,7 +179,7 @@ model = dict(
             post_center_range=[-61.2, -61.2, -10.0, 61.2, 61.2, 10.0],
             pc_range=point_cloud_range,
             # FIXME: change to 20 when evaluate caption
-            max_num=20,
+            max_num=300,
             voxel_size=voxel_size,
             num_classes=10),
         positional_encoding=dict(
@@ -177,6 +216,8 @@ file_client_args = dict(backend='disk')
 
 train_pipeline = [
     dict(type='LoadMultiViewImageFromFiles', to_float32=True),
+    dict(type='LoadPointsFromFile', coord_type='LIDAR', load_dim=5, use_dim=5),
+    # dict(type='LoadPointsFromMultiSweeps', sweeps_num=9, load_dim=5, use_dim=5),
     dict(type='PhotoMetricDistortionMultiViewImage'),
     dict(type='LoadAnnotations3D', with_bbox_3d=True, with_label_3d=True, with_caption_3d=True, with_attr_label=False),
     dict(type='ObjectRangeFilter', point_cloud_range=point_cloud_range),
@@ -185,12 +226,15 @@ train_pipeline = [
     dict(type='RandomScaleImageMultiViewImage', scales=[0.5]),
     dict(type='PadMultiViewImage', size_divisor=32),
     dict(type='DefaultFormatBundle3D', class_names=class_names),
-    dict(type='CustomCollect3D', keys=['gt_bboxes_3d', 'gt_labels_3d', 'img', 'gt_captions_3d'])
+    dict(type='CustomCollect3D', keys=['gt_bboxes_3d', 'gt_labels_3d', 'img', 'gt_captions_3d', 'points'])
 ]
 
 test_pipeline = [
     dict(type='LoadMultiViewImageFromFiles', to_float32=True),
+    dict(type='LoadPointsFromFile', coord_type='LIDAR', load_dim=5, use_dim=5),
+    # dict(type='LoadPointsFromMultiSweeps', sweeps_num=9, load_dim=5, use_dim=5),
     dict(type='NormalizeMultiviewImage', **img_norm_cfg),
+   
     dict(
         type='MultiScaleFlipAug3D',
         img_scale=(1600, 900),
@@ -203,7 +247,7 @@ test_pipeline = [
                 type='DefaultFormatBundle3D',
                 class_names=class_names,
                 with_label=False),
-            dict(type='CustomCollect3D', keys=['img'])
+            dict(type='CustomCollect3D', keys=['img', 'points'])
         ])
 ]
 
