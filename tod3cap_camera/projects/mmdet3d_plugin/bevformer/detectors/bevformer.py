@@ -385,16 +385,22 @@ class BEVFormer(MVXTwoStageDetector):
             prev_bev = None
             bs, len_queue, num_cams, C, H, W = imgs_queue.shape
             imgs_queue = imgs_queue.reshape(bs*len_queue, num_cams, C, H, W)
-            pts_queue = pts.reshape(bs*len_queue, *pts.shape[2:])
             img_feats_list = self.extract_feat(img=imgs_queue, len_queue=len_queue)
-            pts_feats_queue = self.extract_pts_feat(pts_queue)
+            if self.fusion and pts is not None:
+                pts_queue = pts.reshape(bs*len_queue, *pts.shape[2:])
+                pts_feats_queue = self.extract_pts_feat(pts_queue)
+            else:
+                pts_feats_queue = None            
             for i in range(len_queue):
                 img_metas = [each[i] for each in img_metas_list]
                 if not img_metas[0]['prev_bev_exists']:
                     prev_bev = None
                 # img_feats = self.extract_feat(img=img, img_metas=img_metas)
                 img_feats = [each_scale[:, i] for each_scale in img_feats_list]
-                pts_feats = pts_feats_queue[i:i+1, :]
+                if pts_feats_queue is not None:
+                    pts_feats = pts_feats_queue[i:i+1, :]
+                else:
+                    pts_feats = None
                 prev_bev = self.pts_bbox_head(
                     img_feats, pts_feats, img_metas, prev_bev, only_bev=True)
                 if self.fusion and pts_feats != None:
@@ -450,10 +456,13 @@ class BEVFormer(MVXTwoStageDetector):
         # do not freeze the bev encoder
         len_queue = img.size(1)
         prev_img = img[:, :-1, ...]
-        prev_pts = points[:, :-1, ...]
+        if points is not None:
+            prev_pts = points[:, :-1, ...]
+            pts = points[:, -1, ...]
+        else:
+            prev_pts = None
+            pts = None
         img = img[:, -1, ...]
-        pts = points[:, -1, ...]
-
         prev_img_metas = copy.deepcopy(img_metas)
         prev_bev = self.obtain_history_bev(prev_img, prev_pts, prev_img_metas)  # [bs, len_queue, N, 5]
 
@@ -461,7 +470,10 @@ class BEVFormer(MVXTwoStageDetector):
         if not img_metas[0]['prev_bev_exists']:
             prev_bev = None
         img_feats = self.extract_feat(img=img, img_metas=img_metas)
-        pts_feats = self.extract_pts_feat(pts) # [bs, N, 5]
+        if pts is not None:
+            pts_feats = self.extract_pts_feat(pts) # [bs, N, 5]
+        else:
+            pts_feats = None
         losses = dict()
         losses_pts = self.forward_pts_train(img_feats, 
                                             pts_feats,

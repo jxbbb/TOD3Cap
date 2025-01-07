@@ -39,7 +39,7 @@ input_modality = dict(
     use_map=False,
     use_external=True)
 
-_fusion_ = True
+_fusion_ = False
 _training_stage_ = 2
 _dim_ = 256
 _pos_dim_ = _dim_//2
@@ -216,8 +216,6 @@ file_client_args = dict(backend='disk')
 
 train_pipeline = [
     dict(type='LoadMultiViewImageFromFiles', to_float32=True),
-    dict(type='LoadPointsFromFile', coord_type='LIDAR', load_dim=5, use_dim=5),
-    # dict(type='LoadPointsFromMultiSweeps', sweeps_num=9, load_dim=5, use_dim=5),
     dict(type='PhotoMetricDistortionMultiViewImage'),
     dict(type='LoadAnnotations3D', with_bbox_3d=True, with_label_3d=True, with_caption_3d=True, with_attr_label=False),
     dict(type='ObjectRangeFilter', point_cloud_range=point_cloud_range),
@@ -226,13 +224,11 @@ train_pipeline = [
     dict(type='RandomScaleImageMultiViewImage', scales=[0.5]),
     dict(type='PadMultiViewImage', size_divisor=32),
     dict(type='DefaultFormatBundle3D', class_names=class_names),
-    dict(type='CustomCollect3D', keys=['gt_bboxes_3d', 'gt_labels_3d', 'img', 'gt_captions_3d', 'points'])
+    dict(type='CustomCollect3D', keys=['gt_bboxes_3d', 'gt_labels_3d', 'img', 'gt_captions_3d'])
 ]
 
 test_pipeline = [
     dict(type='LoadMultiViewImageFromFiles', to_float32=True),
-    dict(type='LoadPointsFromFile', coord_type='LIDAR', load_dim=5, use_dim=5),
-    # dict(type='LoadPointsFromMultiSweeps', sweeps_num=9, load_dim=5, use_dim=5),
     dict(type='NormalizeMultiviewImage', **img_norm_cfg),
    
     dict(
@@ -247,7 +243,7 @@ test_pipeline = [
                 type='DefaultFormatBundle3D',
                 class_names=class_names,
                 with_label=False),
-            dict(type='CustomCollect3D', keys=['img', 'points'])
+            dict(type='CustomCollect3D', keys=['img'])
         ])
 ]
 
@@ -299,7 +295,7 @@ lr_config = dict(
     warmup_iters=500,
     warmup_ratio=1.0 / 3,
     min_lr_ratio=1e-3)
-total_epochs = 10
+total_epochs = 24
 evaluation = dict(interval=1, pipeline=test_pipeline)
 
 runner = dict(type='EpochBasedRunner', max_epochs=total_epochs)
