@@ -227,15 +227,12 @@ def main():
     if cfg["_training_stage_"] != 1:
         misc.load_model(model.llama_adapter, llama_adapter_pretrained_path)
         # if you have trained camera_only model, you can load it here
-        ckpt_llama_adapter = torch.load("epoch_10_former.pth", map_location=torch.device('cpu'))
-        ckpt_detector = torch.load("work_dirs/bevformer_tiny_fusion_stage1/epoch_18.pth", map_location=torch.device('cpu'))
+        ckpt_llama_adapter = torch.load("checkpoints/epoch_10_former.pth", map_location=torch.device('cpu'))
+        ckpt_detector = torch.load("checkpoints/fusion_stage1.pth", map_location=torch.device('cpu'))
         state_dict = ckpt_llama_adapter["state_dict"]
         filtered_state_dict = {k: v for k, v in state_dict.items() if "llama_adapter" in k}
         filtered_state_dict.update(ckpt_detector["state_dict"])
         model.load_state_dict(filtered_state_dict, strict=False)
-
-    
-    # checkpoint = load_checkpoint(model, "/lpai/volumes/lmm-data-proc/jinbu/TOD3Cap/work_dirs/bevformer_tiny_24_10_26/epoch_10.pth", map_location='cpu')
 
     # logger.info(f'Model:\n{model}')
     datasets = [build_dataset(cfg.data.train)]

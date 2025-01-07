@@ -4,6 +4,8 @@ Pillow
 gradio
 tqdm
 yapf==0.40.1
-numpy
+numpy==1.23.0
 setuptools==59.5.0  # our codes require a specific version of setuptools
 nuscenes-devkit==1.1.11
+lyft-dataset-sdk==0.0.8
+trimesh==4.5.3

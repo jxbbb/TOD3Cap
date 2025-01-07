@@ -230,8 +230,11 @@ class BEVFormer(MVXTwoStageDetector):
         # get caption loss
         # placehold
         caploss = self.caption_head(outs, pts_feats, sampling_results, gt_captions_3d, gt_caplabels_3d)
-
-        losses.update({"loss_cap": caploss})
+        
+        if self.training_stage == 2:
+            losses = {"loss_cap":caploss}
+        else: 
+            losses.update({"loss_cap": caploss})
 
         return losses
 
