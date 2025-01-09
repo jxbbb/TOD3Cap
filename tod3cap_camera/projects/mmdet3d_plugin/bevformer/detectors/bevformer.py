@@ -382,7 +382,9 @@ class BEVFormer(MVXTwoStageDetector):
     def obtain_history_bev(self, imgs_queue, pts, img_metas_list):
         """Obtain history BEV features iteratively. To save GPU memory, gradients are not calculated.
         """
-        self.eval()
+        for k in self._modules.keys():
+            if k != 'llama_adapter':
+                self._modules[k].eval()
 
         with torch.no_grad():
             prev_bev = None

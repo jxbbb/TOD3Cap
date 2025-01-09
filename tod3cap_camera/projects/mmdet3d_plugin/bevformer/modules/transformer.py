@@ -202,6 +202,7 @@ class PerceptionTransformer(BaseModule):
             **kwargs
         )
         if pts_feats is not None and self.fusion:
+            # print("AAAAA")
             bev_embed = self.fuser([bev_embed.permute(0, 2, 1).reshape(1, pts_feats.shape[1], bev_h, bev_w), pts_feats])
             bev_embed = bev_embed.reshape(bs, pts_feats.shape[1], -1).permute(0, 2, 1)
 
