@@ -231,11 +231,20 @@ def main():
     if cfg["_training_stage_"] != 1:
         misc.load_model(model.llama_adapter, llama_adapter_pretrained_path)
         # if you have trained camera_only model, you can load it here
-        ckpt_llama_adapter = torch.load("checkpoints/epoch_10_former.pth", map_location=torch.device('cpu'))
-        ckpt_detector = torch.load("checkpoints/fusion_stage1.pth", map_location=torch.device('cpu'))
-        state_dict = ckpt_llama_adapter["state_dict"]
-        filtered_state_dict = {k: v for k, v in state_dict.items() if "llama_adapter" in k}
-        filtered_state_dict.update(ckpt_detector["state_dict"])
+        if cfg["_training_stage_"] == 2:
+            ckpt_llama_adapter = torch.load("checkpoints/epoch_10_former.pth", map_location=torch.device('cpu'))
+            ckpt_detector = torch.load("checkpoints/fusion_stage1.pth", map_location=torch.device('cpu'))
+            state_dict = ckpt_llama_adapter["state_dict"]
+            filtered_state_dict = {k: v for k, v in state_dict.items() if "llama_adapter" in k}
+            filtered_state_dict.update(ckpt_detector["state_dict"])
+        elif cfg["_training_stage_"] == 3:
+            # ckpt_stage2 = torch.load("work_dirs/bevformer_tiny_fusion_stage2/epoch_3.pth", map_location=torch.device('cpu'))
+            # filtered_state_dict = ckpt_stage2["state_dict"]
+            ckpt_llama_adapter = torch.load("checkpoints/epoch_10_former.pth", map_location=torch.device('cpu'))
+            ckpt_detector = torch.load("checkpoints/fusion_stage1.pth", map_location=torch.device('cpu'))
+            state_dict = ckpt_llama_adapter["state_dict"]
+            filtered_state_dict = {k: v for k, v in state_dict.items() if "llama_adapter" in k}
+            filtered_state_dict.update(ckpt_detector["state_dict"])    
         model.load_state_dict(filtered_state_dict, strict=False)
 
     # logger.info(f'Model:\n{model}')
