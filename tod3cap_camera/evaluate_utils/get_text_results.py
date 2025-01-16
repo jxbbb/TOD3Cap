@@ -139,11 +139,12 @@ class DetectionEval:
                 bbox_token = gt_box_one_sample[all_ious.index(max_iou)].box_token
                 if bbox_token in self.all_gt_caption:
                     reference_all_data = self.all_gt_caption[bbox_token]
-                    reference = reference_all_data['attribute_caption']['attribute_caption'] + \
-                            " about " + str(round(reference_all_data['depth_caption']['depth']))+" meters away" + \
-                            " " + reference_all_data['localization_caption']['localization_caption'] + \
-                            " is " + reference_all_data['motion_caption']['motion_caption'] + \
-                            " " + reference_all_data['map_caption']['map_caption']
+                    reference = reference_all_data['final_caption']
+                    # reference = reference_all_data['attribute_caption']['attribute_caption'] + \
+                    #         " about " + str(round(reference_all_data['depth_caption']['depth']))+" meters away" + \
+                    #         " " + reference_all_data['localization_caption']['localization_caption'] + \
+                    #         " is " + reference_all_data['motion_caption']['motion_caption'] + \
+                    #         " " + reference_all_data['map_caption']['map_caption']
                 else:
                     reference = "The object is ignored."
                 record = {

@@ -90,15 +90,15 @@ class BEVFormer(MVXTwoStageDetector):
         if self.training_stage != 1:
             self.llama_adapter = LLaMA_adapter(llama_ckpt_dir, llama_tokenzier_path)
 
-        if self.training_stage == 2:
-            # Freeze parameters except llama_adapter
-            self.freeze_parameters()
+    #     if self.training_stage == 2:
+    #         # Freeze parameters except llama_adapter
+    #         self.freeze_parameters()
 
-    def freeze_parameters(self):
-        # Freeze all parameters by default
-        for name, param in self.named_parameters():
-            if "llama_adapter" not in name:  # Check if the parameter is part of llama_adapter
-                param.requires_grad = False  # Freeze it by setting requires_grad to False
+    # def freeze_parameters(self):
+    #     # Freeze all parameters by default
+    #     for name, param in self.named_parameters():
+    #         if "llama_adapter" not in name:  # Check if the parameter is part of llama_adapter
+    #             param.requires_grad = False  # Freeze it by setting requires_grad to False
 
 
     def extract_img_feat(self, img, img_metas, len_queue=None):
@@ -233,8 +233,10 @@ class BEVFormer(MVXTwoStageDetector):
         
         if self.training_stage == 2:
             losses = {"loss_cap":caploss}
-        else: 
-            losses.update({"loss_cap": caploss})
+        else:
+            for k in losses.keys():
+                losses[k] = losses[k] * 0.3
+            losses.update({"loss_cap": caploss * 2})
 
         return losses
 
@@ -323,7 +325,7 @@ class BEVFormer(MVXTwoStageDetector):
             if downsample_proposal:
                 # TODO: make sure the num_bboxes is the same as bbox coder's
                 # we only evaluate several objects because the huge memory cost of LLM
-                num_bboxes = 64
+                num_bboxes = 20
 
                 cls_scores = cls_scores.sigmoid()
                 scores, indexs = cls_scores.view(-1).topk(num_bboxes)
@@ -357,6 +359,7 @@ class BEVFormer(MVXTwoStageDetector):
 
             caption_outputs.append(ps_caption_output)
         print(f"*****************Iter Done: batch size: {batch_size} patch size:{num_bboxes} ******************")
+        # print(ps_caption_output[:3])
         return caption_outputs
 
 

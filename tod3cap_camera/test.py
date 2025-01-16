@@ -260,6 +260,12 @@ def main():
             eval_kwargs.update(dict(metric=args.eval, **kwargs))
 
             print(dataset.evaluate(outputs, **eval_kwargs))
+            
+        epoch_id = args.checkpoint.split("/")[-1].split(".")[0]
+        print("*****************" + epoch_id + "*****************")
+        epoch_id_file = os.path.join(kwargs['jsonfile_prefix'], epoch_id)
+        print(epoch_id_file)
+        os.system("touch " + epoch_id_file)
 
 
 if __name__ == '__main__':

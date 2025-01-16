@@ -1,6 +1,6 @@
-# TOD3Cap: Camera-based implementations
+# TOD3Cap
 
-## Getting Started
+## Enviroment Setup
 
 a. Create a conda virtual environment and activate it.
 ```bash
@@ -57,4 +57,26 @@ cd nlg-eval
 pip install -r requirements.txt
 python setup.py install
 nlg-eval --setup
+```
+
+## Train & Test
+a. Train with fusion mode.
+```bash
+sh tools/dist_train_fusion.sh
+
+# Pretrained weights of BEVFusion (implemented by ourself) and LLaMA-Adapter are required.
+
+```
+b. Train with camera-only mode.
+```bash
+sh tools/dist_train_camera.sh
+
+# Pretrained weights of BEVFormer (implemented by ourself) and LLaMA-Adapter are required.
+```
+
+c. Train stage1 to obtain the pre-trained weights of BEVFormer or BEVFusion. (optional)
+```bash
+sh tools/dist_train_camera1.sh
+sh tools/dist_train_fusion1.sh
+# Train stage1 optional, we provide the pretrained weights of stage1.
 ```
