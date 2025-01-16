@@ -80,3 +80,19 @@ sh tools/dist_train_camera1.sh
 sh tools/dist_train_fusion1.sh
 # Train stage1 optional, we provide the pretrained weights of stage1.
 ```
+
+## Models
+
+```bash
+mkdir checkpoints
+# Download pretrained models from Google Drive:
+# fusion_stage1.pth (BEVFusion Stage1)
+# 7fa55208379faf2dd862565284101b0e4a2a72114d6490a95e432cf9d9b6c813_BIAS-7B.pth (LLaMA)
+# tod3cap_camera/checkpoints/epoch_10_former.pth (LLaMA-Adapter & BEVFormer Stage1)
+```
+
+* We release our best-performing checkpoints. You can download these models at [Google Drive] and place them under `checkpoints` directory. If the directory does not exist, you can create one.
+
+## Dataset Preparation
+
+You can download the TOD3Cap dataset in [Google Drive](https://drive.google.com/drive/folders/1LGimA3Il-9J1eJ3FYSzASnfD2Gcls_W1).

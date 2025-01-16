@@ -91,43 +91,7 @@ This reposity will be updated soon, including:
 
 ## Getting Started
 
-Camera-based implementation: see `tod3cap_camera/README.md`.
-
-Lidar-based and fusion-based: see `tod3cap_fusion/README.md`.
-
-## Models
-
-* We release our best-performing checkpoints. You can download these models at [Google Drive] and place them under `checkpoints` directory. If the directory does not exist, you can create one.
-
-* We release the pretrained detector models we used during training in [Google Drive]. If you want to use other pretrained video-swin models, you can refer to [BEVFormer](https://github.com/fundamentalvision/BEVFormer.git) and [BEVFusion](https://github.com/mit-han-lab/bevfusion.git).
-
-
-
-## Dataset Preparation
-
-You can download the TOD3Cap dataset in [Google Drive](https://drive.google.com/drive/folders/1LGimA3Il-9J1eJ3FYSzASnfD2Gcls_W1).
-
-## Train
-
-We provide example scripts to train our model.
-```bash
-cd tod3cap_fusion
-. dist_train_stage2.sh
-# After changing the checkpoint path to your own path
-. dist_train.sh
-```
-
-## Evaluate
-
-We provide example scripts to evaluate pre-trained checkpoints.
-
-```bash
-cd tod3cap_fusion
-# After changing the checkpoint path to your own path
-. dist_test.sh
-# After changing the result path to your own path
-. eval.sh
-```
+Two branch implementation: see `tod3cap_camera/README.md`.
 
 
 ## Qualititive results
