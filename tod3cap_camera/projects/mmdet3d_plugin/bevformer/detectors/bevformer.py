@@ -325,7 +325,7 @@ class BEVFormer(MVXTwoStageDetector):
             if downsample_proposal:
                 # TODO: make sure the num_bboxes is the same as bbox coder's
                 # we only evaluate several objects because the huge memory cost of LLM
-                num_bboxes = 20
+                num_bboxes = 64
 
                 cls_scores = cls_scores.sigmoid()
                 scores, indexs = cls_scores.view(-1).topk(num_bboxes)
@@ -562,6 +562,8 @@ class BEVFormer(MVXTwoStageDetector):
         img_feats = self.extract_feat(img=img, img_metas=img_metas)
         if self.fusion and pts is not None:
             pts_feats = self.extract_pts_feat(pts=pts)
+        else:
+            pts_feats = None
         bbox_list = [dict() for i in range(len(img_metas))]
         new_prev_bev, bbox_pts = self.simple_test_pts(
             img_feats, pts_feats, img_metas, prev_bev, rescale=rescale)

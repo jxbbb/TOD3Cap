@@ -238,8 +238,9 @@ def main():
             filtered_state_dict.update(ckpt_detector["state_dict"])
         else:
             ckpt = torch.load("checkpoints/epoch_10_former.pth", map_location=torch.device('cpu'))
-            filtered_state_dict = {k: v for k, v in state_dict.items() if "llama_adapter" in k}
-            filtered_state_dict.update(ckpt_detector["state_dict"])   
+            filtered_state_dict = ckpt["state_dict"]
+            # filtered_state_dict = {k: v for k, v in state_dict.items() if "llama_adapter" in k}
+            # filtered_state_dict.update(ckpt_detector["state_dict"])   
         model.load_state_dict(filtered_state_dict, strict=False)
 
     # logger.info(f'Model:\n{model}')

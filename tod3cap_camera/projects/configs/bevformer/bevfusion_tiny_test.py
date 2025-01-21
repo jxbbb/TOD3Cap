@@ -179,7 +179,7 @@ model = dict(
             post_center_range=[-61.2, -61.2, -10.0, 61.2, 61.2, 10.0],
             pc_range=point_cloud_range,
             # FIXME: change to 20 when evaluate caption
-            max_num=20,
+            max_num=64,
             voxel_size=voxel_size,
             num_classes=10),
         positional_encoding=dict(

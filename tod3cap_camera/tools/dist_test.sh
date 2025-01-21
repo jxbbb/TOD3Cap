@@ -11,4 +11,4 @@ CUDA_LAUNCH_BLOCKING=1 \
 PYTHONPATH="./" \
 
 python -m torch.distributed.launch --nproc_per_node=8 --master_port=51249 \
-    test.py projects/configs/bevformer/bevformer_tiny_fusion_test.py work_dirs/bevformer_tiny_fusion_stage3_new/epoch_5.pth --launcher pytorch --eval bbox
+    test.py projects/configs/bevformer/bevfusion_tiny_test.py work_dirs/bevfusion_tiny_stage3/epoch_5.pth --launcher pytorch --eval bbox

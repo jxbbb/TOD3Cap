@@ -74,7 +74,7 @@ class CustomNuScenesDataset(NuScenesDataset):
         format_gt_captions_3d = []
         format_gt_caplabels_3d = []
         format_gt_capmask_3d = []
-        
+        # change instruction and answer
         for answer_token in gt_captions_3d:
             if answer_token in self.caplist:
                 answer = self.caplist[answer_token]['final_caption']
