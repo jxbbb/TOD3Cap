@@ -85,10 +85,10 @@ sh tools/dist_train_fusion1.sh
 
 ```bash
 mkdir checkpoints
-# Download pretrained models from Google Drive:
-# fusion_stage1.pth (BEVFusion Stage1)
-# 7fa55208379faf2dd862565284101b0e4a2a72114d6490a95e432cf9d9b6c813_BIAS-7B.pth (LLaMA)
-# tod3cap_camera/checkpoints/epoch_10_former.pth (LLaMA-Adapter & BEVFormer Stage1)
+# Download pretrained models from [Huggingface](https://huggingface.co/jxbbbb/tod3cap):
+# fusion_stage1.pth
+# 7fa55208379faf2dd862565284101b0e4a2a72114d6490a95e432cf9d9b6c813_BIAS-7B.pth
+# former_stage2_previous_version.pth
 ```
 
 * We release our best-performing checkpoints. You can download these models at [Google Drive] and place them under `checkpoints` directory. If the directory does not exist, you can create one.
