@@ -91,7 +91,7 @@ mkdir checkpoints
 # former_stage2_previous_version.pth
 ```
 
-* We release our best-performing checkpoints. You can download these models at [Google Drive] and place them under `checkpoints` directory. If the directory does not exist, you can create one.
+* We release our best-performing checkpoints. You can download these models at [Huggingface](https://huggingface.co/jxbbbb/tod3cap) and place them under `checkpoints` directory. If the directory does not exist, you can create one.
 
 ## Dataset Preparation
 
